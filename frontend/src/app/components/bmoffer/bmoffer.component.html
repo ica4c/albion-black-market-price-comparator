@@ -1,0 +1,42 @@
+<article class="offer">
+  <header class="offer__header">
+    <div class="icon offer__icon">
+      <img [src]="resolveIconUrl(offer.ItemTypeId, offer.QualityLevel)"
+           [alt]="('items.' + offer.ItemGroupTypeId) | translate"
+           class="icon__image">
+      <div class="icon__quantity">{{ offer.Amount }}</div>
+    </div>
+
+    <div class="offer__details">
+      <div class="offer__title">{{ ('items.' + offer.ItemGroupTypeId) | translate }}</div>
+    </div>
+
+    <div class="offer__price">
+      <span class="silver">{{ offer.UnitPriceSilver | number:'1.0-0' }}</span>
+
+      <div class="offer__comparison">
+        <ng-container *ngIf="!isLoading; else skeletonTpl">
+          <div class="comparison" *ngFor="let location of locations">
+            <ng-container *ngIf="getPrices(location, offer.QualityLevel) as price">
+              <span class="faction" [class.faction_lymhurst]="location === 'Lymhurst'"
+                    [class.faction_bridgewatch]="location === 'Bridgewatch'"
+                    [class.faction_martlock]="location === 'Martlock'"
+                    [class.faction_thetford]="location === 'Thetford'"
+                    [class.faction_fortSterling]="location === 'Fort Sterling'"
+                    [class.faction_caerleon]="location === 'Caerleon'"></span>
+
+              <span class="silver" *ngIf="price.avg || 0 > 0">{{ price.avg | number:'1.0-0' }}</span>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </header>
+
+</article>
+
+<ng-template #skeletonTpl>
+  <ngx-skeleton-loader count="1"
+                       class="comparison comparison_skeleton"
+                       *ngFor="let i of randAmount" appearance="line"></ngx-skeleton-loader>
+</ng-template>

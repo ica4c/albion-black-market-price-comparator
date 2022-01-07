@@ -1,0 +1,71 @@
+<div class="workspace" *ngIf="(offers$ | async) as offers; else preparationTpl">
+  <div class="workspace__offers">
+    <div class="workspace__header">
+      <h3 class="workspace__title">{{ 'marketplace_offers' | translate }}</h3>
+
+      <div class="workspace__actions" *ngIf="!isPricesLoading && offers.length > 0">
+        <a href="#" (click)="onPricesUpdate(offers)">{{ 'renew_prices' | translate }}</a>
+      </div>
+    </div>
+
+    <div class="offers">
+      <div class="offer" *ngFor="let offer of offers">
+        <bm-offer [offer]="offer"
+                  (click)="onCartUpdate(offer)"
+                  [locations]="filters.locations || []"
+                  [price]="prices ? prices[offer.ItemTypeId] : undefined"
+                  [isLoading]="isPricesLoading"></bm-offer>
+      </div>
+    </div>
+  </div>
+
+  <div class="workspace__cart" *ngIf="cart && cart.length > 0">
+    <div class="workspace__header">
+      <h3 class="workspace__title">{{ 'cart_offers' | translate }}</h3>
+
+      <div class="workspace__actions">
+        <a href="#" (click)="onClearCart()">{{ 'clear_cart' | translate }}</a>
+      </div>
+    </div>
+
+    <div class="offers" *ngIf="(cart || []).length > 0; else cartIsEmptyTpl">
+      <div class="offer" *ngFor="let offer of cart">
+        <bm-offer [offer]="offer"
+                  (click)="onCartRemove(offer)"
+                  [locations]="filters.locations || []"
+                  [price]="prices ? prices[offer.ItemTypeId] : undefined"
+                  [isLoading]="isPricesLoading"></bm-offer>
+      </div>
+    </div>
+  </div>
+</div>
+
+<a href="#" class="btt" (click)="onBackToTop()" *ngIf="scrolledEnoughToGoBack">
+  {{ 'back_to_top' | translate }}
+</a>
+
+<ng-template #preparationTpl>
+  <div class="warning warning_init">
+    <img class="warning__icon" src="./assets/bm_icon.png" [alt]="'open_any_market_window_to_start' | translate">
+
+    <div class="warning__title">
+      {{ 'open_any_market_window_to_start' | translate }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #cartIsEmptyTpl>
+  <div class="warning warning_cart">
+    <div class="warning__title">
+      {{ 'add_items_to_cart_to_start' | translate }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #fetchingPricesTpl>
+  <div class="warning warning_loading">
+    <div class="warning__title">
+      {{ 'fetching_prices' | translate }}
+    </div>
+  </div>
+</ng-template>

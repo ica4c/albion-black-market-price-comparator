@@ -1,0 +1,35 @@
+{
+  "name": "albion-bm-prices-overview",
+  "version": "0.1.0",
+  "description": "Albion black market offer city prices overview application",
+  "main": "main.js",
+  "scripts": {
+    "app:dir": "electron-builder --dir",
+    "app:dist": "electron-builder",
+    "start": "cd frontend && npm run -- build --prod --deployUrl=`pwd`/dist/albion-bm-prices-overview/ && cd .. && electron .",
+    "build": "cd frontend && npm run -- build --prod --deployUrl=/frontend/ && cd .. && electron-builder build -wlm",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "author": "Ruslan Gataullin <ruslan@solid.studio>",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^16.0.5",
+    "electron-builder": "^22.14.5"
+  },
+  "dependencies": {},
+  "build": {
+    "appId": "solid.albion.black_market_comparison",
+    "mac": {
+      "category": "Media"
+    },
+    "win": {},
+    "files": [
+      "main.js",
+      "frontend/dist/albion-bm-prices-overview/**/*",
+      "backend/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ]
+  }
+}
