@@ -9,10 +9,7 @@
     "app:dist": "electron-builder",
     "start": "cd frontend && npm run -- build --prod --baseHref=./frontend && cd .. && electron .",
     "build:frontend": "cd frontend && npm i && npm run -- build --prod --baseHref=./frontend && cd ..",
-    "build:win": "electron-builder build -w --arm64",
-    "build:osx": "electron-builder build -m --ia32 --x64 --arm64",
-    "build:linux": "electron-builder build -l --ia32 --x64 --arm64",
-    "build": "nelectron-builder build -wlm --ia32 --x64 --arm64",
+    "build": "nelectron-builder build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Solid.Studio",
