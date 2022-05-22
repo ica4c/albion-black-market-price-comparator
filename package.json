@@ -28,24 +28,14 @@
     "appId": "solid.albion.black_market_comparison",
     "mac": {
       "category": "public.app-category.utilities",
-      "target": [
-        {
-          "target": "dmg",
-          "arch": ["x64", "ia32", "arm64"]
-        }
-      ]
+      "target": "dmg"
     },
     "win": {
       "icon": "./resource/icons/app.png",
-      "target": [
-        {
-          "target": "portable",
-          "arch": ["x64", "ia32", "arm64"]
-        }
-      ]
+      "target": "portable"
     },
     "portable": {
-      "artifactName": "${productName}-${version}.portable.${ext}",
+      "artifactName": "${productName}-${version}.portable.${ext}"
     },
     "files": [
       "package.json",
