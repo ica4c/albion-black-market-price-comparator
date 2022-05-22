@@ -1,16 +1,13 @@
 const AONetwork = require("ao-network");
 const { EventEmitter } = require("events");
+const {log} = require("electron-log");
 
 class AlbionBlackMarketSniffer extends EventEmitter {
     aoNet;
-    logger;
 
-    constructor(logger) {
+    constructor() {
         super();
-
         this.aoNet = new AONetwork();
-        this.logger = logger;
-
         this._init();
     }
 
@@ -43,7 +40,7 @@ class AlbionBlackMarketSniffer extends EventEmitter {
 
                 this.emit('auction_update', offers);
             } catch (e) {
-                this.logger.error(e);
+                log.error(e);
             }
         });
     }

@@ -22,7 +22,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    // AppRoutingModule,
     HttpClientModule,
     NgxSkeletonLoaderModule,
     TranslateModule.forRoot({

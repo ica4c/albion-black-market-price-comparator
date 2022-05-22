@@ -3,7 +3,7 @@ export const environment = {
 
   services: {
     wss: {
-      host: 'ws://localhost:4444'
+      host: 'ws://localhost:14800'
     },
 
     albionDataProject: {

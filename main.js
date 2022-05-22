@@ -1,32 +1,71 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const url = require("url");
-const cp = require('child_process');
-const { dialog } = require('electron')
+const http = require("http");
+const { WebSocketServer, WebSocket } = require('ws');
+const Sniffer = require('./sniffer');
+const log = require('electron-log');
 
 let browserWindow,
-    backend;
+    server,
+    execPath = path.dirname(app.getPath('exe'));
 
-function respawnBackendServer() {
-    if(backend) {
-        backend.kill();
-    }
+log.transports.file.resolvePath = (v) => path.join(execPath, 'main.log');
 
-    backend = cp.spawn('node', [path.join(__dirname, '/backend/index.js')]);
+async function initSnifferService() {
+    server = http.createServer();
 
-    backend.stderr.on('data', (stream) => {
-        const error = stream.toString();
-
-        if(error.includes('(cannot open BPF device)')) {
-            dialog.showErrorBox('Elevation required', 'Admin privileges required. Restart in sudo mode.');
-            app.exit();
-        } else {
-            setTimeout(respawnBackendServer, 1500);
+    const wsServer = new WebSocketServer({
+        server,
+        perMessageDeflate: {
+            zlibDeflateOptions: {
+                chunkSize: 1024,
+                memLevel: 7,
+                level: 3
+            },
+            zlibInflateOptions: {
+                chunkSize: 10 * 1024
+            },
+            clientNoContextTakeover: true,
+            serverNoContextTakeover: true,
+            serverMaxWindowBits: 10,
+            concurrencyLimit: 10,
+            threshold: 1024
         }
     });
 
-    backend.stdout.on('data', (stream) => {
-        console.log(stream.toString());
+    wsServer.on('connection', () => {
+        log.info('Client connected');
+    });
+
+    wsServer.on('error', (e) => {
+        log.error(e.message);
+        log.error(e.stack);
+    });
+
+    server.listen(
+        14800,
+        () => {
+            const sniffer = new Sniffer();
+
+            sniffer.on(
+                'auction_update',
+                offers => wsServer.clients
+                    .forEach(ws => {
+                        if(ws.readyState === WebSocket.OPEN) {
+                            log.info('Auction update triggered');
+                            ws.send(JSON.stringify({type: 'UPDATE_OFFERS', data: offers}));
+                        }
+                    })
+            );
+
+            log.info('Server is ready to accept connections');
+        }
+    );
+
+    server.on('error', (e) => {
+        log.error(e.message);
+        log.error(e.stack);
     });
 }
 
@@ -40,6 +79,7 @@ async function initApp() {
         maxHeight: 2400,
         resizable: true,
         maximizable: false,
+        autoHideMenuBar: true
     });
 
     browserWindow.loadURL(
@@ -55,17 +95,18 @@ async function initApp() {
     });
 
     browserWindow.on("closed", () => {
-        if(backend) {
-            backend.kill();
-        }
-
         browserWindow = null;
     });
 }
 
-app.on("ready", () => {
-    respawnBackendServer();
-    initApp();
+app.on("ready", async () => {
+    try {
+        await initSnifferService();
+        await initApp();
+    } catch (e) {
+        log.error(e.message);
+        log.error(e.stack);
+    }
 });
 
 app.on("activate", () => {
@@ -75,8 +116,8 @@ app.on("activate", () => {
 });
 
 app.on("window-all-closed", () => {
-    if(backend) {
-        backend.kill();
+    if(server) {
+        server.close();
     }
 
     if (process.platform !== "darwin") {

@@ -4,7 +4,10 @@
       <img [src]="resolveIconUrl(offer.ItemTypeId, offer.QualityLevel)"
            [alt]="('items.' + offer.ItemGroupTypeId) | translate"
            class="icon__image">
-      <div class="icon__quantity">{{ offer.Amount }}</div>
+      <div class="icon__quantity"
+           [class.icon__quantity_single]="offer.Amount < 10"
+           [class.icon__quantity_double]="offer.Amount > 10 && offer.Amount < 100"
+           [class.icon__quantity_tripple]="offer.Amount > 100">{{ offer.Amount }}</div>
     </div>
 
     <div class="offer__details">

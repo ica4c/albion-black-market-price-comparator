@@ -1,35 +1,72 @@
 {
-  "name": "albion-bm-prices-overview",
+  "name": "albion-bm-flipper",
   "version": "0.1.0",
   "description": "Albion black market offer city prices overview application",
   "main": "main.js",
   "scripts": {
+    "postinstall": "electron-builder install-app-deps",
     "app:dir": "electron-builder --dir",
     "app:dist": "electron-builder",
-    "start": "cd frontend && npm run -- build --prod --deployUrl=`pwd`/dist/albion-bm-prices-overview/ && cd .. && electron .",
-    "build": "cd frontend && npm run -- build --prod --deployUrl=/frontend/ && cd .. && electron-builder build -wlm",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "electron-builder install-app-deps"
+    "start": "cd frontend && npm run -- build --prod --baseHref=./frontend && cd .. && electron .",
+    "build:frontend": "cd frontend && npm i && npm run -- build --prod --baseHref=./frontend && cd ..",
+    "build:win": "electron-builder build -w --arm64",
+    "build:osx": "electron-builder build -m --ia32 --x64 --arm64",
+    "build:linux": "electron-builder build -l --ia32 --x64 --arm64",
+    "build": "nelectron-builder build -wlm --ia32 --x64 --arm64",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Ruslan Gataullin <ruslan@solid.studio>",
-  "license": "ISC",
+  "author": "Solid.Studio",
+  "license": "MIT",
   "devDependencies": {
     "electron": "^16.0.5",
     "electron-builder": "^22.14.5"
   },
-  "dependencies": {},
+  "dependencies": {
+    "ao-network": "^2.0.0",
+    "electron-log": "^4.4.6",
+    "ws": "^8.4.0"
+  },
   "build": {
+    "remoteBuild": true,
     "appId": "solid.albion.black_market_comparison",
     "mac": {
-      "category": "Media"
+      "category": "public.app-category.utilities",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "ia32", "arm64"]
+        }
+      ]
     },
-    "win": {},
+    "win": {
+      "icon": "./resource/icons/app.png",
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64", "ia32", "arm64"]
+        }
+      ]
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}.portable.${ext}",
+    },
     "files": [
+      "package.json",
       "main.js",
+      "sniffer.js",
       "frontend/dist/albion-bm-prices-overview/**/*",
-      "backend/**/*",
       "node_modules/**/*",
-      "package.json"
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
     ]
   }
 }

@@ -4,7 +4,7 @@
       <h3 class="workspace__title">{{ 'marketplace_offers' | translate }}</h3>
 
       <div class="workspace__actions" *ngIf="!isPricesLoading && offers.length > 0">
-        <a href="#" (click)="onPricesUpdate(offers)">{{ 'renew_prices' | translate }}</a>
+        <button class="btn" (click)="onPricesUpdate(offers)">{{ 'renew_prices' | translate }}</button>
       </div>
     </div>
 
@@ -24,7 +24,7 @@
       <h3 class="workspace__title">{{ 'cart_offers' | translate }}</h3>
 
       <div class="workspace__actions">
-        <a href="#" (click)="onClearCart()">{{ 'clear_cart' | translate }}</a>
+        <button class="btn" (click)="onClearCart()">{{ 'clear_cart' | translate }}</button>
       </div>
     </div>
 
@@ -46,7 +46,7 @@
 
 <ng-template #preparationTpl>
   <div class="warning warning_init">
-    <img class="warning__icon" src="./assets/bm_icon.png" [alt]="'open_any_market_window_to_start' | translate">
+    <img class="warning__icon" src="assets/images/bm_icon.png" [alt]="'open_any_market_window_to_start' | translate">
 
     <div class="warning__title">
       {{ 'open_any_market_window_to_start' | translate }}
