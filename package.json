@@ -9,7 +9,7 @@
     "app:dist": "electron-builder",
     "start": "cd frontend && npm run -- build --prod --baseHref=./frontend && cd .. && electron .",
     "build:frontend": "cd frontend && npm i && npm run -- build --prod --baseHref=./frontend && cd ..",
-    "build": "nelectron-builder build",
+    "build:app": "electron-builder build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Solid.Studio",
