@@ -1,6 +1,6 @@
 {
   "name": "albion-bm-flipper",
-  "version": "0.1.0",
+  "version": "0.2.4+4",
   "description": "Albion black market offer city prices overview application",
   "main": "main.js",
   "scripts": {
