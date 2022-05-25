@@ -5,18 +5,17 @@
   "main": "main.js",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
-    "app:dir": "electron-builder --dir",
-    "app:dist": "electron-builder",
-    "start": "cd frontend && npm run -- build --prod --baseHref=./frontend && cd .. && electron .",
-    "build:frontend": "cd frontend && npm i && npm run -- build --prod --baseHref=./frontend && cd ..",
-    "build:app": "electron-builder build",
+    "builder": "electron-builder",
+    "start": "cd frontend && yarn build --prod --baseHref=./frontend && cd .. && electron .",
+    "build:frontend": "cd frontend && npm i && yarn build --prod --baseHref=./frontend && cd ..",
+    "build:app": "electron-builder build -wlm",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Solid.Studio",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^16.0.5",
-    "electron-builder": "^22.14.5"
+    "electron": "^18.0",
+    "electron-builder": "^23.0.9"
   },
   "dependencies": {
     "ao-network": "^2.0.0",
@@ -28,14 +27,26 @@
     "appId": "solid.albion.black_market_comparison",
     "mac": {
       "category": "public.app-category.utilities",
-      "target": "dmg"
+      "asar": true,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["universal"]
+        }
+      ]
     },
     "win": {
-      "icon": "./resource/icons/app.png",
-      "target": "portable"
+      "asar": true,
+      "icon": "./resource/icon.png",
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["arm64", "x64", "ia32"]
+        }
+      ]
     },
     "portable": {
-      "artifactName": "${productName}-${version}.portable.${ext}"
+      "artifactName": "${productName}-${arch}-${version}.portable.${ext}"
     },
     "files": [
       "package.json",
